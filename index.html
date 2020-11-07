@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>vue实践</title>
+        <script src="./vue.js" type="text/javascript"></script>
+        
+        <!--在这里为div的class定义若干个类选择器，类选择器的定义格式是 .类名{...} -->
+        <!--类选择器一般是当为某个标签定义了class=某一个类时，该类标签所共有的CSS样式-->
+        <style type="text/css">
+            .blue{
+                color:blue;
+                font-size: 2em;
+            }
+            .red{
+                color: red;
+                font-size: 3em;
+            }
+            .black{
+                color: black;
+                font-size: 4em;
+            }
+            .grey{
+                color: grey;
+                font-size: 5em;
+            }
+        </style>
+        <!--字体默认大小1em=16px,32px=2em，em是相对大小-->
+    </head>
+    <body>
+        <div id="app-1">        
+            {{message}}
+            <br>
+            <p>使用双大括号语法:{{rawHtml}}</p>
+            <!--用这种方式，即便vue实例的属性中将rawHtml写成一句html句子，也只会打印出字符串，不会输出html语句-->
+            
+            <p>使用v-html来实现html语法句字输出:<span v-html="rawHtml"></span></p>
+            <!--这种方式，需要将v-html作为一个标签的属性，在vue实例中将rawHtml写成html语句，DOM中的这个span标签中就会嵌套添加vue实例中的html语句的内容-->
+            <br>
+            <p v-html="rawHtml">改良(这句话相当于就没有了，DOM里不会体现)</p>
+            <!--这就是用vue在DOM中绑定HTML语句的方法，以及绑定字符串、数字等基本数据的方法-->
+        </div>
+
+        <!--v-once属性：-->
+        <!--在上面这个div中绑定了app.message，当该属性改变时，视图会随时发生变化。然而，若在div容器标签中添加属性v-once代表只插值一次，随后的更新将不会更改视图-->
+        <!--div或者其他的容器如span都是可以的，但是注意，后台vue对象的数据是正常更改的，只是不再填充到视图当中，所以setTimeout函数和watch函数仍然会做出相应的操作-->
+
+
+
+        <!--为html标签绑定属性 v-bind:属性名="" -->
+        <!--这里以为div标签绑定class属性为例，绑定了类的具体属性后如何体现效果？定义了若干个css样式类选择器-->
+        <!--比如某个需求是点击按钮，更换颜色，就可以通过为相应的标签动态绑定class的方式，定义好所针对的class有怎样的样式，随时动态的修改class即可-->
+        <hr>
+        <div id="app-2" v-bind:class="color">
+            {{a+0.1}} &nbsp; {{b+0.0002}}
+            <br>
+            {{ques?trueAns:falseAns}}
+            <br>
+            {{funTest.split('').reverse().join('')}}
+
+        </div>
+        <!--vue数据绑定支持js的运算、三元运算{{变量/运算?'YES':'NO'}}、函数运算  -->
+
+        <!--用vbind将div的class设置为color的值即blue，然后自定义css属性来指定这个class有怎样的样式(不能为div直接指定cloor)-->
+
+
+
+        <script type="text/javascript">
+            var app = new Vue({
+                el: "#app-1",
+                data: {
+                    message:"hello-vue",
+                    rawHtml: '<span style="color:red">红色文字</span>'
+                }//,
+                /* 6个生命周期钩子：在实例化对象内，以属性的形式进行声明，如下 */
+                // //1.beforeCreate,整个页面创建之前，实例化对象创建之前被调用
+                // beforeCreate: function{
+                //     console.log("beforeCreate--实例化创建之前");
+                // },
+
+                // //2.created，实例创建完成后立即被调用，在这一步实例已经完成了数据观测，属性和方法运算，watch/event事件回调
+                // //但是这个时候实例还没有被挂载到DOM，所以el属性是不可见的
+                // created: function(){
+                //     console.log("created--实例化已创建但未被挂载到DOM");
+                // },
+
+                // //3.挂载之前调用，渲染函数首次被调用
+                // beforeMount:function(){
+                //     console.log("beforeMount--挂载之前调用，渲染函数使用");
+                // },
+
+                // //4.挂载成功，DOM中的el元素被实例化对象vm.$el替换
+                // mounted:function(){
+                //     console.log("mounted--挂载成功");
+                // },
+
+                // //5.数据更新变化之前被调用的函数
+                // beforeUpdate:function(){
+                //     console.log("beforeUpdate--数据更新前调用");
+                // },
+
+                // //6.组件DOM数据已更新完毕后调用
+                // updated:function(){
+                //     console.log("updated--DOM数据已被更新");
+                // }
+            });
+
+            //setTimeout(function(){
+            //    app.message = "new-message-setTimeout";
+            //},3000);//3kms即3s后将其改变
+
+            app.$watch('message', function(newVal, oldVal){
+                alert("newVal:" + newVal +";oldVal:" + oldVal);
+            });
+
+            /* 第二个vue实例化对象 */
+            var mydata = {a:123,b:2321, color:'red', ques:0, trueAns:"真的", falseAns:"假的",funTest:"abcdefghi"}
+            var app2 = new Vue({
+                el: "#app-2",
+                data: mydata
+            });
+
+        </script>
+
+    </body>
+</html>
