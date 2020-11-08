@@ -25,7 +25,7 @@
                 font-size: 5em;
             }
             .active{
-                background: red;
+                background: purple;
             }
         </style>
         <!--字体默认大小1em=16px,32px=2em，em是相对大小-->
@@ -71,9 +71,12 @@
 
         <!--用vbind将div的class设置为color的值即blue，然后自定义css属性来指定这个class有怎样的样式(不能为div直接指定cloor)-->
 
-        <!--v-if渲染指令：根据v-if的bool值来决定标签是否被渲染-->
+
+        <!--v-if渲染指令：根据v-if的bool值来决定标签是否被渲染(是否能被看到)-->
         <div id="app-3">
-            <p v-if="seen">现在你可以看到这个段落</p>
+            <p v-if="seen==='1'">seen=1</p>
+            <p v-else-if="seen==='2'">seen=2</p>
+            <p v-else>seen-not1-not2</p>
             <br>
             {{seen}}
         </div>
@@ -87,6 +90,7 @@
 
 
         <!--class与style样式绑定-->
+        <!--也就是说class="{:}"当冒号后的bool为真的时候这个class才会被指定-->
         <div id="app-5">
             <div 
             v-bind:class="{active:isActive}"
@@ -95,6 +99,85 @@
             {{isActive}}
             </div>
         </div>
+
+        <div id="app-6" v-bind:style="{color:color,fontSize:size}">
+            hello-app-6
+        </div>
+
+
+        <!--列表渲染(for item in items)-->
+        <div id="app-7">
+            <ul>
+                <li v-for="item,index in items">
+                   {{index}} &nbsp; {{item.message}} 
+                </li>
+                <li>{{name}}</li>
+                <li>{{age}}</li>
+                <li>{{sex}}</li>
+            </ul>
+            <hr>
+            <ul>
+                <li v-for="value,key in object">
+                    {{key}} &nbsp; {{value}}
+                </li>
+            </ul>
+        </div>
+        <hr>
+
+        <!--事件绑定-->
+        <div id="app-8">
+            <button v-on:click="count+=1">count的值:{{count}}</button>
+            <br>
+            <button v-on:click="funName">count2的值:{{count2}}</button>
+        </div>
+
+
+
+
+
+        <!--用户输入数据绑定,单行文本input-->
+        <div id="app-9">
+            <input v-model="message" placeholder="editme">
+            <br>
+            <p>Message is:{{message}}</p>
+        </div>
+
+        <!--用户输入数据绑定,多行文本textarea-->
+        <div id="app-10">
+            <textarea v-model="message" placeholder="pleace input"></textarea>
+            <br>
+            <p>Message is: {{message}}</p>
+        </div>
+        <hr>
+
+        <!--同上，复选框checkbox,单选框radio(注意写标签属性的时候不要写逗号)-->
+        <div id="app-11">
+            <input type="checkbox" v-model="checkedNames" id="name1" value="name1value">
+            <label for="name1">name1</label>
+            <input type="checkbox" v-model="checkedNames" id="name2" value="name2value">
+            <label for="name2">name2</label>
+            <input type="checkbox" v-model="checkedNames" id="name3" value="name3value">
+            <label for="name3">name3</label>
+            <br>
+            checkedNames: {{checkedNames}}
+            <hr>
+            <input type="radio" v-model="pickedNum" id="one" value=1>
+            <label for="one">1</label>
+            <input type="radio" v-model="pickedNum" id="two" value=2>
+            <label for="two">2</label>
+            <br>
+            pickedNum: {{pickedNum}}
+            <br>
+            <button type="button" @click="submit">提交</button>
+        </div>
+
+
+        <!--Vue组件-->
+        <div id="app-12">
+            <buttoncounter></buttoncounter>
+        </div>
+
+
 
 
 
@@ -122,7 +205,7 @@
                 data: mydata
             });
 
-            var mydata3 = {seen:true}
+            var mydata3 = {seen:'3'}
             var app3 = new Vue({
                 el:"#app-3",    //注意vue实例选择器不要忘记在id前面加#
                 data:mydata3
@@ -148,6 +231,89 @@
                     isActive:true
                 }
             });
+
+            var app6 = new Vue({
+                el:"#app-6",
+                data:{
+                    color: '#dddddd',
+                    size:'0.5em'
+                }
+            });
+
+            var app7 = new Vue({
+                el:"#app-7",
+                data:{
+                    items:[//items只是app7的一个变量，它是一个数组。用item in items可以遍历数组中的每一个对象
+                        {message:"item1的message"}, //这是数组中的一个对象{},每个对象都有一个message属性，所以循环调用的时候item.message
+                        {message:"item2的message"},
+                        {message:"item3的message"},
+                        {message:"item4的message"}
+                    ],
+                    name:"张三",
+                    age:23,
+                    sex:"female",
+                    object:{        //这是实例化对象的data中的一个对象
+                        width:100,
+                        height:200,
+                        hobby:"money",
+                        detail:"other"
+                    }
+                }
+            });
+
+
+            var app8 = new Vue({
+                el:"#app-8",
+                data:{
+                    count:0,
+                    count2:100
+                },
+                methods:{
+                    funName:function(){
+                        this.count2 -= 1;           //注意，在vue实例中创建的方法要调用本身的data时要用this，否则找不到
+                    }
+                }
+            });
+
+            var app9 = new Vue({
+                el:"#app-9",
+                data:{
+                    message:""
+                }
+            });
+
+
+            var app10 = new Vue({
+                el:"#app-10",
+                data:{
+                    message:""
+                }
+            });
+
+
+            var app11 = new Vue({
+                el:"#app-11",            //所有的vue实例都是通过元素的id值来进行绑定的
+                data:{
+                    checkedNames:[],     //注意，复选框的数据绑定是数组
+                    pickedNum:""         //单选框可以对应一个标量
+                },
+                methods:{
+                    submit:function(){
+                        alert("在这里可以用this.pickedNum的方法获取所有data中的值");
+                    }
+                }
+            });
+
+            //创建一个button相关组件：参数1是组件名，参数二是一个对象，包含data函数和模板两个部分
+            Vue.component('buttoncounter',{
+                data:function(){
+                    return{
+                        count:0
+                    }
+                },
+                template:'<button v-on:click="count++">按钮组件,点击了{{coun2t}}次</button>'
+            })
+
 
         </script>
 

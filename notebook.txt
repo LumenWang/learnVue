@@ -1,0 +1,90 @@
+8.条件渲染
+<div id="app">
+<div v-if="para==='a'">xxx</div>
+<div v-else-if="para==='b'"></div>
+<div v-else></div>
+</div>
+
+2.展示渲染
+<div v-show="para名">xxx</div> //当para变量为true时这个div被渲染
+
+
+
+
+
+3.列表渲染:将一组数据格式化绑定到前台的无序列表中的方法,可以是数组，可以是包含多个属性的对象(后期根据需求进行具体学习)
+<div id="app-7">
+            <ul>                                                          //:key是v-bind:key的缩写,为每个li绑定一个唯一的key
+                <li v-for="item,index in items" :key="index">             //对数组[]中的每一个对象{}进行遍历，分别对应一个li，取出每个{}的message属性
+                   {{index}} &nbsp; {{item.message}}                      //index是只遍历时每个对象的下标
+                </li>
+                <li>{{name}}</li>
+                <li>{{age}}</li>
+                <li>{{sex}}</li>
+            </ul>
+            
+            <ul>
+                <li v-for="value,key in object", :key="key">    //vue实例的data中有一个object对象{}，它有许多属性value，依次遍历每个属性，都取出来
+                    {{key}} &nbsp; {{value}}                    //key是指该对象的每个属性的键，即属性名
+                </li>
+            </ul>
+</div>
+            //vue的js代码：
+            var app7 = new Vue({
+                el:"#app-7",
+                data:{
+                    items:[//items只是app7的一个变量，它是一个数组。用item in items可以遍历数组中的每一个对象
+                        {message:"item1的message"}, //这是数组中的一个对象{},每个对象都有一个message属性，所以循环调用的时候item.message
+                        {message:"item2的message"},
+                        {message:"item3的message"},
+                        {message:"item4的message"}
+                    ],
+                    name:"张三",
+                    age:23,
+                    sex:"female",
+                    object:{        //这是实例化对象的data中的一个对象
+                        width:100,
+                        height:200,
+                        hobby:"money",
+                        detail:"other"
+                    }
+                }
+            });
+
+
+
+4.事件绑定
+<button v-on:click="funName">count2的值:{{count2}}</button>
+            var app8 = new Vue({
+                el:"#app-8",
+                data:{
+                    count:0,
+                    count2:100
+                },
+                methods:{
+                    funName:function(){
+                        this.count2 -= 1;           //注意，在vue实例中创建的方法要调用本身的data时要用this，否则找不到
+                    }
+                }
+            });
+常见的事件都可以用v-on:事件名="funName(para)"的方法绑定到标签上，如click,dblclick
+
+
+
+
+
+
+
+5.用户输入数据绑定(之前都是把后台vue实例的数据用{{}}方式拿到前台来现实，现在我们需要从前台用户输入数据，绑定到后台vue实例的数据域中)
+        <div id="app-9">
+            <input v-model="message" placeholder="editme">  //用一个input接收用户输入，用v-model将该输入内容绑定在后台vue对象的message数据域
+            <br>                                            //placeholder是当文本框为空时候显示的灰色字
+            <p>Message is:{{message}}</p>
+        </div>
+在index.html和视频中练习了input单行文本，textarea多行文本，checkbox复选框,radio单选框的数据绑定
+注意复选框用v-model绑定的后台变量是一个数组，每一个复选框选项都与这个数组关联，只是不同的复选框选项的id和value不同
+所有的表单/输入形式均可以利用vue实例化绑定后进行双向数据传输：可以给前台一组初始值，也可以将用户输入数据绑到后台vue实例
+数据操作结束后可以点击提交按钮，触发click事件，在vue实例中定义该事件函数，将实例中的数据封装到一个变量中，上传等等
+
+
+6.Vue组件：相当于是把一个小功能集成，然后可以用标签的方式在html中进行调用,可以自行开发组件
